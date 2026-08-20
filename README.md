@@ -3,24 +3,21 @@
 
 ## 使用
 
-在目标仓库新建 `.github/workflows/normalize-markdown.yml`：
+在需要启用的 Git 仓库中运行：
 
-```yaml
-name: Normalize Markdown
+Linux / macOS / Git Bash：
 
-on:
-  push:
-    paths: ['**/*.md', '**/*.markdown']
-
-permissions:
-  contents: write
-
-jobs:
-  normalize:
-    uses: leo-grayrat/markdown-github-normalizer/.github/workflows/normalize.yml@main
+```bash
+curl -fsSL https://raw.githubusercontent.com/leo-grayrat/markdown-github-normalizer/main/install.sh | bash
 ```
 
-之后 Markdown 更新并 push 时会自动处理。
+Windows PowerShell：
+
+```powershell
+irm https://raw.githubusercontent.com/leo-grayrat/markdown-github-normalizer/main/install.ps1 | iex
+```
+
+安装后正常提交、push 即可，Markdown 更新时会自动处理。
 
 ## 处理方式
 
