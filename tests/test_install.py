@@ -1,3 +1,4 @@
+import os
 import shutil
 import subprocess
 import sys
@@ -8,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INSTALL_PY = ROOT / "install.py"
 INSTALL_SH = ROOT / "install.sh"
+BASH_AVAILABLE = os.name != "nt" and shutil.which("bash") is not None
 EXPECTED = """name: Normalize Markdown
 
 on:
@@ -61,7 +63,7 @@ class InstallScriptTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("Git", result.stderr)
 
-    @unittest.skipUnless(shutil.which("bash"), "bash is not available")
+    @unittest.skipUnless(BASH_AVAILABLE, "Bash installer is tested only on Unix-like runners")
     def test_install_sh_writes_caller_workflow_in_current_git_repo(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
@@ -75,7 +77,7 @@ class InstallScriptTests(unittest.TestCase):
             workflow = repo / ".github" / "workflows" / "normalize-markdown.yml"
             self.assertEqual(workflow.read_text(encoding="utf-8"), EXPECTED)
 
-    @unittest.skipUnless(shutil.which("bash"), "bash is not available")
+    @unittest.skipUnless(BASH_AVAILABLE, "Bash installer is tested only on Unix-like runners")
     def test_install_sh_replaces_existing_installer_workflow(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
@@ -88,7 +90,7 @@ class InstallScriptTests(unittest.TestCase):
 
             self.assertEqual(workflow.read_text(encoding="utf-8"), EXPECTED)
 
-    @unittest.skipUnless(shutil.which("bash"), "bash is not available")
+    @unittest.skipUnless(BASH_AVAILABLE, "Bash installer is tested only on Unix-like runners")
     def test_install_sh_rejects_non_git_directory(self):
         with tempfile.TemporaryDirectory() as tmp:
             result = subprocess.run(
