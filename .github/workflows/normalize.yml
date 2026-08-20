@@ -1,0 +1,37 @@
+name: Normalize Markdown
+
+on:
+  workflow_call:
+    inputs:
+      mode:
+        description: auto, copy, or replace
+        required: false
+        type: string
+        default: auto
+      files:
+        description: Optional newline-separated Markdown paths
+        required: false
+        type: string
+        default: ''
+      config:
+        description: Repository-relative config path
+        required: false
+        type: string
+        default: .markdown-github-normalizer.toml
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: leo-grayrat/markdown-github-normalizer@main
+        with:
+          mode: ${{ inputs.mode }}
+          files: ${{ inputs.files }}
+          config: ${{ inputs.config }}
