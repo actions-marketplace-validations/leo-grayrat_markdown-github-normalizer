@@ -3,21 +3,23 @@
 
 ## 使用
 
-在需要启用的 Git 仓库中运行：
-
-Linux / macOS / Git Bash：
+在需要启用的 Git 仓库中运行，推荐直接用 Python：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/leo-grayrat/markdown-github-normalizer/main/install.sh | bash
+python -c "from urllib.request import urlopen; exec(urlopen('https://raw.githubusercontent.com/leo-grayrat/markdown-github-normalizer/main/install.py').read().decode())"
 ```
 
-Windows PowerShell：
+安装后正常提交、push 即可，Markdown 更新时会自动处理。
+
+备用安装方式：
 
 ```powershell
 irm https://raw.githubusercontent.com/leo-grayrat/markdown-github-normalizer/main/install.ps1 | iex
 ```
 
-安装后正常提交、push 即可，Markdown 更新时会自动处理。
+```bash
+curl -fsSL https://raw.githubusercontent.com/leo-grayrat/markdown-github-normalizer/main/install.sh | bash
+```
 
 ## 处理方式
 
