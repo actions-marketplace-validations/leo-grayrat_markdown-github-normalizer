@@ -1,0 +1,30 @@
+name: Markdown GitHub Normalizer
+description: Normalize Typora/GPT Markdown and write a GitHub-safe copy or replace the source.
+inputs:
+  mode:
+    description: auto, copy, or replace
+    required: false
+    default: auto
+  files:
+    description: Optional newline-separated Markdown paths. Empty means files changed by the triggering commit.
+    required: false
+    default: ""
+  config:
+    description: Repository-relative config path.
+    required: false
+    default: .markdown-github-normalizer.toml
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Normalize Markdown
+      shell: bash
+      env:
+        INPUT_MODE: ${{ inputs.mode }}
+        INPUT_FILES: ${{ inputs.files }}
+        INPUT_CONFIG: ${{ inputs.config }}
+        NORMALIZER_BEFORE: ${{ github.event.before }}
+      run: python "$GITHUB_ACTION_PATH/scripts/action.py"

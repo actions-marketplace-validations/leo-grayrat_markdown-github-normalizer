@@ -1,0 +1,9 @@
+default_mode = "copy"
+
+[[rules]]
+pattern = "README.md"
+mode = "replace"
+
+[[rules]]
+pattern = "docs/generated/*.md"
+mode = "replace"

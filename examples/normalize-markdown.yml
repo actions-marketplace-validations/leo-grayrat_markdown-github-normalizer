@@ -1,0 +1,39 @@
+name: Normalize Markdown
+
+on:
+  push:
+    paths:
+      - '**/*.md'
+      - '**/*.markdown'
+      - '.markdown-github-normalizer.toml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'auto / copy / replace'
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - copy
+          - replace
+      files:
+        description: 'Optional Markdown paths, one per line'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: leo-grayrat/markdown-github-normalizer@main
+        with:
+          mode: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
+          files: ${{ github.event_name == 'workflow_dispatch' && inputs.files || '' }}
