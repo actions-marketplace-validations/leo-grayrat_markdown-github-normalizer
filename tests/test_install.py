@@ -42,6 +42,22 @@ class InstallScriptTests(unittest.TestCase):
             self.assertEqual(workflow.read_text(encoding="utf-8"), EXPECTED)
             self.assertFalse((nested / ".github").exists())
 
+    def test_install_py_handles_non_utf8_stdout_with_bilingual_message(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            env = os.environ.copy()
+            env["PYTHONIOENCODING"] = "cp1252"
+
+            result = subprocess.run(
+                [sys.executable, str(INSTALL_PY)], cwd=repo, capture_output=True, env=env
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr.decode("utf-8", errors="replace"))
+            stdout = result.stdout.decode("utf-8")
+            self.assertIn("已安装", stdout)
+            self.assertIn("Installed", stdout)
+
     def test_install_py_replaces_existing_installer_workflow(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
