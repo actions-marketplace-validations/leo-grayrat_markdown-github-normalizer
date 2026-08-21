@@ -22,7 +22,7 @@ class CliTests(unittest.TestCase):
             self.assertEqual(source.read_text(encoding="utf-8"), "第一行\n第二行\n")
             generated = root / "notes-github.md"
             self.assertEqual(generated.read_text(encoding="utf-8"), "第一行\n\n第二行\n")
-            self.assertEqual(result.output_path, generated)
+            self.assertTrue(result.output_path.samefile(generated))
             self.assertTrue(result.changed)
 
     def test_replace_mode_uses_unified_normalization(self):
@@ -40,7 +40,7 @@ class CliTests(unittest.TestCase):
                 source.read_text(encoding="utf-8"),
                 "第一行\n\n第二行\n\n```math\n\\mathrm{vec}(D_{m}) \\times x\n```\n",
             )
-            self.assertEqual(result.output_path, source)
+            self.assertTrue(result.output_path.samefile(source))
             self.assertTrue(result.changed)
 
     def test_module_invocation_writes_copy_output(self):
