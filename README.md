@@ -1,6 +1,16 @@
 # markdown-github-normalizer
 你是否苦恼在本地 Typora 写了文档推送之后，会发现被空格和换行搞得公式格式一坨？你是否发现 GPT 自动提交文件后，因为滥用 LaTeX 括号语法而让公式也变成一坨？  这个仓库的 GitHub Action 就来解决这个痛点
 
+## 先看看效果
+
+如果只是想看看它会怎么处理这些问题，不需要先拿自己的仓库做实验。clone 本仓库后，在仓库根目录运行：
+
+```bash
+python -m src.mdgithub_normalizer.cli demo/input.md --mode copy --repo-root .
+```
+
+它会保留故意写坏的 `demo/input.md`，并在本地生成 `demo/input-github.md`。直接对比两个文件即可；生成结果已经加入 `.gitignore`，仓库里不会预置修复后的答案。
+
 ## 使用
 
 在需要启用的 Git 仓库中运行，推荐直接用 Python：
