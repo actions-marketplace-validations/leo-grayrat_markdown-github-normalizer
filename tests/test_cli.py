@@ -1,8 +1,13 @@
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 from mdgithub_normalizer.cli import process_file
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class CliTests(unittest.TestCase):
@@ -37,6 +42,33 @@ class CliTests(unittest.TestCase):
             )
             self.assertEqual(result.output_path, source)
             self.assertTrue(result.changed)
+
+    def test_module_invocation_writes_copy_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "demo.md"
+            source.write_text("第一行\n第二行\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "src.mdgithub_normalizer.cli",
+                    str(source),
+                    "--mode",
+                    "copy",
+                    "--repo-root",
+                    str(root),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            generated = root / "demo-github.md"
+            self.assertEqual(generated.read_text(encoding="utf-8"), "第一行\n\n第二行\n")
+            self.assertIn("write:", result.stdout)
 
     def test_generated_file_is_skipped(self):
         with tempfile.TemporaryDirectory() as tmp:
