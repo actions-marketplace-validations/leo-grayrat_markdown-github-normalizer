@@ -85,3 +85,7 @@ def main(argv: list[str] | None = None) -> int:
         status = "skip" if result.skipped else ("write" if result.changed else "clean")
         print(f"{status}: {result.source_path} -> {result.output_path} ({result.mode})")
     return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
