@@ -39,6 +39,29 @@ class NormalizeMarkdownTests(unittest.TestCase):
         expected = "```math\n\\mathrm{vec}(D_{m}) \\times x \\mkern5mu y \\mkern3mu z\n```\n"
         self.assertEqual(normalize_markdown(source), expected)
 
+    def test_replaces_makebox_with_mbox_and_drops_layout_arguments(self):
+        source = (
+            "```math\n"
+            "\\makebox{hello}\n"
+            "\\makebox[4em]{hello}\n"
+            "\\makebox[4em][r]{hello}\n"
+            "\\makebox[0pt][r]{第1行}\n"
+            "\\makebox[4em][c]{\\frac{x}{y}}\n"
+            "\\boxed{x+y} \\fbox{hello} \\mbox{hello} \\text{hello}\n"
+            "```\n"
+        )
+        expected = (
+            "```math\n"
+            "\\mbox{hello}\n"
+            "\\mbox{hello}\n"
+            "\\mbox{hello}\n"
+            "\\mbox{第1行}\n"
+            "\\mbox{\\frac{x}{y}}\n"
+            "\\boxed{x+y} \\fbox{hello} \\mbox{hello} \\text{hello}\n"
+            "```\n"
+        )
+        self.assertEqual(normalize_markdown(source), expected)
+
     def test_existing_math_fence_uses_same_repairs(self):
         source = "```math\n\\operatorname{rank}(A) \\cross B \\; C\n```\n"
         expected = "```math\n\\mathrm{rank}(A) \\times B \\mkern5mu C\n```\n"
