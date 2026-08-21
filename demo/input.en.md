@@ -1,0 +1,83 @@
+# markdown-github-normalizer Demo Input
+
+This file intentionally collects the Markdown / LaTeX compatibility problems we have actually encountered so far. After running the demo command in the README, compare it with the generated `input.en-github.md`.
+
+## 1. Typora prose with a single newline
+
+This is the first paragraph
+This is the second paragraph, but there is only one newline in the source
+
+## 2. Inline math stuck directly to prose
+
+text$x+y$text
+
+AI also often writes it as text\(x+y\)text
+
+## 3. `\[ ... \]` display math
+
+Text directly before the display math
+\[
+E = mc^2
+\]
+Text directly after it as well
+
+## 4. Blank lines inside `$$ ... $$` causing rendering failure
+
+Text directly before the display math
+$$
+A = 1
+
+B = 2
+$$
+Text directly after it as well
+
+## 5. `=` inside `$$ ... $$` being parsed as a Markdown heading structure
+
+$$
+A + B
+=
+C
+$$
+
+## 6. `+` after a blank line inside `$$ ... $$` being parsed as a Markdown list
+
+$$
+A = 1
+
++ B
+$$
+
+## 7. LaTeX spacing commands `\,` and `\;`
+
+$a\,b\;c$
+
+## 8. `\operatorname` rejected by GitHub
+
+$\operatorname{vec}(x)$
+
+## 9. A hand-written `\cross`
+
+$a \cross b$
+
+## 10. AI unnecessarily escaping a subscript
+
+$D\_{m\times n}$
+
+## 11. A space accidentally placed inside the closing bold delimiter
+
+This is **broken bold **followed by more prose
+
+## 12. Prose stuck directly after closing bold
+
+**Conclusion:**text follows immediately
+
+## 13. These contents should not be modified accidentally
+
+Inline code: `$x$ **123 ** \(x\) \cross \operatorname{vec}`
+
+```text
+$x$ **123 ** \(x\) \cross \operatorname{vec}
+$$
++ this is only code too
+$$
+```
