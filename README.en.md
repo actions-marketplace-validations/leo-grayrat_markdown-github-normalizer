@@ -2,6 +2,8 @@
 
 [中文](README.md) | **English**
 
+**[View details on GitHub Marketplace](https://github.com/marketplace/actions/markdown-github-normalizer)**
+
 *Translation by GPT-5.6 Sol.*
 
 Have you ever written a document locally in Typora, pushed it, and then found the formula formatting turned into a mess because of **spaces and line breaks**?
