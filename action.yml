@@ -28,3 +28,7 @@ runs:
         INPUT_CONFIG: ${{ inputs.config }}
         NORMALIZER_BEFORE: ${{ github.event.before }}
       run: python "$GITHUB_ACTION_PATH/scripts/action.py"
+
+branding:
+  icon: 'file-text'
+  color: 'blue'
