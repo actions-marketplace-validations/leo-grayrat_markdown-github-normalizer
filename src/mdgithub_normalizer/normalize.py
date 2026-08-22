@@ -35,6 +35,72 @@ def _display(line: str) -> tuple[str, str] | None:
     return match.group("prefix"), match.group("delim")
 
 
+def _balanced_brace_end(text: str, start: int) -> int | None:
+    depth = 0
+    index = start
+    while index < len(text):
+        char = text[index]
+        escaped = index > 0 and text[index - 1] == "\\"
+        if char == "{" and not escaped:
+            depth += 1
+        elif char == "}" and not escaped:
+            depth -= 1
+            if depth == 0:
+                return index
+        index += 1
+    return None
+
+
+def _replace_makebox(text: str) -> str:
+    command = r"\makebox"
+    output: list[str] = []
+    cursor = 0
+
+    while True:
+        start = text.find(command, cursor)
+        if start < 0:
+            output.append(text[cursor:])
+            return "".join(output)
+
+        output.append(text[cursor:start])
+        after_command = start + len(command)
+        if after_command < len(text) and text[after_command].isalpha():
+            output.append(command)
+            cursor = after_command
+            continue
+
+        position = after_command
+        while position < len(text) and text[position].isspace():
+            position += 1
+
+        valid = True
+        for _ in range(2):
+            if position >= len(text) or text[position] != "[":
+                break
+            close = text.find("]", position + 1)
+            if close < 0:
+                valid = False
+                break
+            position = close + 1
+            while position < len(text) and text[position].isspace():
+                position += 1
+
+        if not valid or position >= len(text) or text[position] != "{":
+            output.append(command)
+            cursor = after_command
+            continue
+
+        close = _balanced_brace_end(text, position)
+        if close is None:
+            output.append(command)
+            cursor = after_command
+            continue
+
+        body = _replace_makebox(text[position + 1 : close])
+        output.append(r"\mbox{" + body + "}")
+        cursor = close + 1
+
+
 def _is_fence_close(line: str, char: str, minimum: int) -> bool:
     match = _fence(line)
     return bool(match and match[1][0] == char and len(match[1]) >= minimum and not match[2].strip())
@@ -86,6 +152,7 @@ def _convert_display_math(lines: list[str]) -> list[str]:
 
 
 def _repair_math(text: str) -> str:
+    text = _replace_makebox(text)
     text = _THIN_SPACE.sub(r"\\mkern3mu ", text)
     text = _THICK_SPACE.sub(r"\\mkern5mu ", text)
     text = _CROSS.sub(r"\\times", text)

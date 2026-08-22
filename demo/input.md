@@ -63,20 +63,24 @@ $a \cross b$
 
 $D\_{m\times n}$
 
-## 11. 加粗结束符内部混入空格
+## 11. GitHub 不支持、AI 又很喜欢写的 `\makebox`
+
+$A \qquad \makebox[0pt][r]{第1行} \qquad B$
+
+## 12. 加粗结束符内部混入空格
 
 这是 **错误加粗 **后面的正文
 
-## 12. 加粗结束后直接粘正文
+## 13. 加粗结束后直接粘正文
 
 **结论：**正文直接跟在后面
 
-## 13. 这些内容不应该被误改
+## 14. 这些内容不应该被误改
 
-行内代码：`$x$ **123 ** \(x\) \cross \operatorname{vec}`
+行内代码：`$x$ **123 ** \(x\) \cross \operatorname{vec} \makebox[0pt][r]{第1行}`
 
 ```text
-$x$ **123 ** \(x\) \cross \operatorname{vec}
+$x$ **123 ** \(x\) \cross \operatorname{vec} \makebox[0pt][r]{第1行}
 $$
 + 这里也只是代码
 $$

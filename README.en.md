@@ -76,7 +76,7 @@ mode = "replace"
 
 - Convert `\[ ... \]` and `$$ ... $$` display math into fenced `math` blocks;
 - Convert ordinary `$...$` and `\( ... \)` inline math into GitHub protected inline math;
-- Fix formula compatibility problems we have actually encountered: `\cross`, `\_{...}`, `\operatorname{...}`, `\,`, and `\;`;
+- Fix formula compatibility problems we have actually encountered: `\cross`, `\_{...}`, `\operatorname{...}`, `\,`, `\;`, and `\makebox`;
 - Add necessary boundary spaces when inline math or bold text is stuck directly to surrounding prose, and fix clear bold-spacing problems such as `**123 **`;
 - Turn single line breaks in Typora prose into paragraph-separating blank lines.
 
@@ -147,6 +147,7 @@ However, things turned out to be more complicated than we expected…
 | A blank line by itself inside `$$ ... $$` may also make the whole formula fail to render | Same underlying problem: the content is not being isolated as one formula block, so ordinary Markdown parsing interferes; blank lines strike again |
 | Valid LaTeX spacing commands such as `\;` and `\,` render merely as escaped `;` and `,` characters | ? (a classic GitHub moment; I do not know why this has to be forbidden) |
 | GitHub blocks some LaTeX macros often written by AI, such as `\operatorname{vec}` | GitHub does not allow users to “freely extend macros” because macros can involve injection and similar risks, even though this is just a syntax-extension macro |
+| Some more advanced LaTeX commands simply do not render (especially ones AI likes to overuse) | AI constantly uses `makebox` for right alignment (note: this does not draw a visible box) |
 | Some symbols simply do not render (especially ones improvised by hand) | For example, using `\cross` for multiplication does not work; it has to be `\times` |
 | AI unnecessarily escapes LaTeX subscripts | For example, `D\_{m\times n}` |
 | A space mixed inside the closing bold delimiter can break bold formatting | `**123 **`: the bold delimiter has to bind toward adjacent valid characters; otherwise who knows whether it should match forward or backward? |
@@ -179,3 +180,7 @@ Other formatting problems are also handled with deliberately simple rules:
 > ~~Manual writing would be the default, while AI commits would be specially marked to trigger the AI case.~~
 >
 > re: After actually implementing it, we found that these specific rules are simple enough to handle in the script. Running them together does not make the tool bloated, so the source distinction was removed.
+
+## Changelog
+
+- **2026-08-22**: Added `\makebox` compatibility handling. Since GitHub currently cannot render `\makebox`, it is downgraded to `\mbox`, preserving the contents while dropping width/alignment parameters; both demo inputs were updated as well.
